@@ -1,0 +1,126 @@
+{% extends 'app/template.html' %}
+
+{% block css %}
+{% load static %}
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Gestion des catégories</h1>
+  <a href="{% url 'category_add' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+    <i class="fas fa-plus fa-sm text-white-50"></i> Ajouter une catégorie
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Liste des catégories</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Domaine</th>
+            <th>Date d'ajout</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for category in categories %}
+          <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description }}</td>
+            <td>{{ category.domain.name }}</td>
+            <td>{{ category.created_at|date:"l d F Y à H\hi\m\i\n" }}</td>
+            <td class="text-center">
+              <a href="{% url 'category_edit' category.pk %}" class="text-warning">
+                <i class="fas fa-edit fa-lg"></i>
+              </a>
+              <a href="#" class="text-danger" data-toggle="modal" data-target="#deleteModal{{ category.pk }}">
+                <i class="fas fa-trash fa-lg"></i>
+              </a>
+              <a href="#" class="text-info" data-toggle="modal" data-target="#detailsModal{{ category.pk }}">
+                <i class="fas fa-info-circle fa-lg"></i>
+              </a>
+              
+              <!-- Delete Modal -->
+              <div class="modal fade" id="deleteModal{{ category.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Cette action est irréversible. Voulez-vous vraiment supprimer la catégorie <strong>{{ category.name }}</strong> ?
+                      <br>
+                      La suppression de cette catégorie entraînera également la suppression des médicaments suivants :
+                      <ul>
+                        {% for medicament in category.medicaments.all %}
+                        <li><strong>{{ medicament.name }}</strong></li>
+                        {% empty %}
+                        Aucun médicament associé
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <a href="{% url 'category_delete' category.pk %}" class="btn btn-danger">Supprimer</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Details Modal -->
+              <div class="modal fade" id="detailsModal{{ category.pk }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="detailsModalLabel">Détails de la catégorie</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p><strong>Nom :</strong> {{ category.name }}</p>
+                      <p><strong>Description :</strong> {{ category.description }}</p>
+                      <p><strong>Domaine :</strong> {{ category.domain.name }}</p>
+                      <p><strong>Date d'ajout :</strong> {{ category.created_at|date:"l d F Y à H\hi\m\i\n" }}</p>
+                      <h5>Médicaments associés</h5>
+                      <ul>
+                        {% for medicament in category.medicaments.all %}
+                        <li>{{ medicament.name }}</li>
+                        {% empty %}
+                        Aucun médicament associé
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

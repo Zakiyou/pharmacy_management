@@ -1,0 +1,115 @@
+{% extends 'app/template.html' %}
+
+{% block css %}
+{% load static %}
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Gestion des entrées de stock</h1>
+  <a href="{% url 'add_stock_entry' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+    <i class="fas fa-plus fa-sm text-white-50"></i> Ajouter une entrée de stock
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Liste des entrées de stock</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Quantité reçue</th>
+            <th>Date de réception</th>
+            <th>Fournisseur</th>
+            <th>Numéro de facture</th>
+            <th>Date d'ajout</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr>
+            <td>{{ entry.medicament.name }}</td>
+            <td>{{ entry.quantity_received }}</td>
+            <td>{{ entry.received_date }}</td>
+            <td>{{ entry.supplier }}</td>
+            <td>{{ entry.invoice_number }}</td>
+            <td>{{ entry.created_at|date:"d/m/Y H:i" }}</td>
+            <td class="text-center">
+                <a href="{% url 'edit_stock_entry' entry.pk %}" class="text-warning">
+                    <i class="fas fa-edit fa-lg"></i>
+                  </a>
+              <a href="#" class="text-danger" data-toggle="modal" data-target="#deleteModal{{ entry.pk }}">
+                <i class="fas fa-trash fa-lg"></i>
+              </a>
+              <a href="#" class="text-info" data-toggle="modal" data-target="#detailsModal{{ entry.pk }}">
+                <i class="fas fa-info-circle fa-lg"></i>
+              </a>
+
+              <!-- Delete Modal -->
+              <div class="modal fade" id="deleteModal{{ entry.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Cette action est irréversible. Voulez-vous vraiment supprimer l'entrée de stock pour <strong>{{ entry.medicament.name }}</strong> ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <a href="{% url 'delete_stock_entry' entry.pk %}" class="btn btn-danger">Supprimer</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Details Modal -->
+              <div class="modal fade" id="detailsModal{{ entry.pk }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="detailsModalLabel">Détails de l'entrée de stock</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p><strong>Médicament :</strong> {{ entry.medicament.name }}</p>
+                      <p><strong>Quantité reçue :</strong> {{ entry.quantity_received }}</p>
+                      <p><strong>Date de réception :</strong> {{ entry.received_date|date:"d/m/Y" }}</p>
+                      <p><strong>Fournisseur :</strong> {{ entry.supplier }}</p>
+                      <p><strong>Numéro de facture :</strong> {{ entry.invoice_number }}</p>
+                      <p><strong>Date d'ajout :</strong> {{ entry.created_at|date:"l d F Y à H\hi\m\i\n" }}</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

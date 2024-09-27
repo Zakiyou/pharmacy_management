@@ -1,0 +1,74 @@
+{% extends 'app/template.html' %}
+{% load crispy_forms_tags %}
+{% block css %}
+{% load static %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="h3 mb-4 text-gray-800">{{ form.instance.pk|yesno:"Modifier,Ajouter" }} un médicament</h1>
+    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="row mb-3">
+            <label for="id_name" class="col-sm-2 col-form-label">Nom</label>
+            <div class="col-sm-10">
+                {{ form.name|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_description" class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-10">
+                {{ form.description|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_price" class="col-sm-2 col-form-label">Prix</label>
+            <div class="col-sm-10">
+                {{ form.price|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_barcode" class="col-sm-2 col-form-label">Code Barre</label>
+            <div class="col-sm-10">
+                {{ form.code|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_stock_quantity" class="col-sm-2 col-form-label">Quantité en Stock</label>
+            <div class="col-sm-10">
+                {{ form.stock_quantity|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_expiration_date" class="col-sm-2 col-form-label">Date d'Expiration</label>
+            <div class="col-sm-10">
+                {{ form.expiration_date|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_category" class="col-sm-2 col-form-label">Catégorie</label>
+            <div class="col-sm-10">
+                {{ form.category|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_type" class="col-sm-2 col-form-label">Type</label>
+            <div class="col-sm-10">
+                {{ form.type|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_icon" class="col-sm-2 col-form-label">Icône</label>
+            <div class="col-sm-10">
+                {{ form.icon|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

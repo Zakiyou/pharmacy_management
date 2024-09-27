@@ -1,0 +1,54 @@
+{% extends 'app/template.html' %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Historique des Médicaments</h1>
+  <a href="{% url 'medicament_list' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+    <i class="fas fa-arrow-left fa-sm text-white-50"></i> Retour à la liste
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Liste des modifications des médicaments</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Utilisateur</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Code</th>
+            <th>Prix</th>
+            <th>Type de Modification</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in history %}
+          <tr>
+            <td>{{ record.history_date|date:"l d F Y à H\hi" }}</td>
+            <td>{{ record.history_user }}</td>
+            <td>{{ record.name }}</td>
+            <td>{{ record.description }}</td>
+            <td>{{ record.code }}</td>
+            <td>{{ record.price }}</td>
+            <td>
+              {% if record.history_type == '+' %}
+              Création
+              {% elif record.history_type == '~' %}
+              Modification
+              {% elif record.history_type == '-' %}
+              Suppression
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

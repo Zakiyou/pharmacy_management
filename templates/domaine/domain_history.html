@@ -1,0 +1,74 @@
+
+{% extends 'app/template.html' %}
+
+{% block css %}
+ {% load static %}
+<link
+  href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block script %}
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %} {% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Historique de gestion de domaine</h1>
+    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+      ><i class="fas fa-download fa-sm text-white-50"></i> Exporter le résultats</a
+    >
+  </div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">
+      Liste de l'historique (Gestion des domaines) 
+    </h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table
+        class="table table-bordered"
+        id="dataTable"
+        width="100%"
+        cellspacing="0"
+      >
+        <thead>
+            <th>Date</th>
+            <th>Utilisateur</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Icone</th>
+            <th>Type de modification</th>
+        </thead>
+
+        <tbody>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.history_date }}</td>
+                <td>{{ record.history_user }}</td>
+                <td>{{ record.name }}</td>
+                <td>{{ record.description }}</td>
+                <td>
+                    {% if record.icon %}
+                    <img src="/media/{{ record.icon }}" alt="{{ record.name }}" width="50" height="50">
+                    {% else %} Pas d'icône {% endif %}
+                </td>
+                <td>
+                    {% if record.history_type == '+' %}
+                    Création
+                    {% elif record.history_type == '~' %}
+                    Modification
+                    {% elif record.history_type == '-' %}
+                    Suppression
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,126 @@
+{% extends 'app/template.html' %}
+
+{% block css %}
+{% load static %}
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Gestion des médicaments</h1>
+  <a href="{% url 'medicament_add' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+    <i class="fas fa-plus fa-sm text-white-50"></i> Ajouter un médicament
+  </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Liste des médicaments</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Icône</th>
+            <th>Catégorie</th>
+            <th>Type</th>
+            <th>Prix</th>
+            <th>Quantité en Stock</th>
+            <th>Date d'expiration</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for medicament in medicaments %}
+          <tr>
+            <td>{{ medicament.name }}</td>
+            <td>{{ medicament.description }}</td>
+            <td>
+              {% if medicament.icon %}
+              <img src="{{ medicament.icon.url }}" alt="{{ medicament.name }}" width="50" height="50" />
+              {% else %} Pas d'icône {% endif %}
+            </td>
+            <td>{{ medicament.category.name }}</td>
+            <td>{{ medicament.get_type_display }}</td>
+            <td>{{ medicament.price }}</td>
+            <td>{{ medicament.stock_quantity }}</td>
+            <td>{{ medicament.expiration_date|date:"l d F Y" }}</td>
+            <td class="text-center">
+              <a href="{% url 'medicament_edit' medicament.pk %}" class="text-warning">
+                <i class="fas fa-edit fa-lg"></i>
+              </a>
+              <a href="#" class="text-danger" data-toggle="modal" data-target="#deleteModal{{ medicament.pk }}">
+                <i class="fas fa-trash fa-lg"></i>
+              </a>
+              <a href="#" class="text-info" data-toggle="modal" data-target="#detailsModal{{ medicament.pk }}">
+                <i class="fas fa-info-circle fa-lg"></i>
+              </a>
+              
+              <!-- Delete Modal -->
+              <div class="modal fade" id="deleteModal{{ medicament.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Cette action est irréversible. Voulez-vous vraiment supprimer le médicament <strong>{{ medicament.name }}</strong> ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <a href="{% url 'medicament_delete' medicament.pk %}" class="btn btn-danger">Supprimer</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Details Modal -->
+              <div class="modal fade" id="detailsModal{{ medicament.pk }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="detailsModalLabel">Détails du médicament</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p><strong>Nom :</strong> {{ medicament.name }}</p>
+                      <p><strong>Description :</strong> {{ medicament.description }}</p>
+                      <p><strong>Catégorie :</strong> {{ medicament.category.name }}</p>
+                      <p><strong>Domaine :</strong> {{ medicament.category.domain.name }}</p>
+                      <p><strong>Type :</strong> {{ medicament.get_type_display }}</p>
+                      <p><strong>Prix :</strong> {{ medicament.price }}</p>
+                      <p><strong>Quantité en Stock :</strong> {{ medicament.stock_quantity }}</p>
+                      <p><strong>Date d'expiration :</strong> {{ medicament.expiration_date|date:"l d F Y" }}</p>
+                      <p><strong>Date d'ajout :</strong> {{ medicament.created_at|date:"l d F Y à H\hi\m\i\n" }}</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

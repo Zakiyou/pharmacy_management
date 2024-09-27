@@ -1,0 +1,41 @@
+{% extends 'app/template.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="h3 mb-4 text-gray-800">Exporter les données de stock</h1>
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="row mb-3">
+            <label for="id_start_date" class="col-sm-2 col-form-label">Date de début</label>
+            <div class="col-sm-10">
+                {{ form.start_date|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_end_date" class="col-sm-2 col-form-label">Date de fin</label>
+            <div class="col-sm-10">
+                {{ form.end_date|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_format" class="col-sm-2 col-form-label">Format</label>
+            <div class="col-sm-10">
+                {{ form.format|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="id_data_type" class="col-sm-2 col-form-label">Type de données</label>
+            <div class="col-sm-10">
+                {{ form.data_type|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Exporter</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
