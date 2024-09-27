@@ -89,9 +89,9 @@ DATABASES = {
         #'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pharmacy_management_db',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'USER': 'zakiyou',
+        'PASSWORD': 'Bagdadi2000!',
+        'HOST': 'zakiyou.mysql.pythonanywhere-services.com',
         'PORT': '3306',
 
     }
